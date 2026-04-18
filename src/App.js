@@ -113,8 +113,7 @@ function App() {
 
   useEffect(() => {
   fetchCustomers();
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-}, [token]);
+}, []); // 🔥 remove dependency completely
 
   const filteredCustomers = customers.filter((c) => {
     const matchesSearch =
