@@ -1,8 +1,9 @@
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect } from "react";
 import axios from "axios";
 
 function App() {
   const API = "https://rto-backend-y943.onrender.com";
+  console.log("API BASE:", API);
 
   const [token, setToken] = useState(localStorage.getItem("token") || "");
   const [email, setEmail] = useState("");
@@ -48,22 +49,6 @@ function App() {
     setCustomers([]);
   };
 
-  const fetchCustomers = useCallback(async () => {
-    if (!token) return;
-
-    try {
-      const res = await axios.get(`${API}/customers`, {
-        headers: {
-          Authorization: token
-        }
-      });
-      setCustomers(res.data);
-    } catch (err) {
-      console.log("FETCH ERROR:", err.response?.data || err.message);
-      alert(err.response?.data || "Fetch failed");
-    }
-  }, [token, API]);
-
   const addCustomer = async () => {
     if (!name || !phone) {
       alert("Enter name and phone");
@@ -84,6 +69,18 @@ function App() {
     } catch (err) {
       console.log("ADD ERROR:", err.response?.data || err.message);
       alert(err.response?.data || "Add failed");
+    }
+  };
+
+  const fetchCustomers = async () => {
+    if (!token) return;
+
+    try {
+      const res = await axios.get(`${API}/customers`, authHeaders);
+      setCustomers(res.data);
+    } catch (err) {
+      console.log("FETCH ERROR:", err.response?.data || err.message);
+      alert(err.response?.data || "Fetch failed");
     }
   };
 
@@ -112,8 +109,9 @@ function App() {
   };
 
   useEffect(() => {
-  fetchCustomers();
-}, []); // 🔥 remove dependency completely
+    fetchCustomers();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [token]);
 
   const filteredCustomers = customers.filter((c) => {
     const matchesSearch =
