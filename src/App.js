@@ -112,8 +112,9 @@ function App() {
   };
 
   useEffect(() => {
-    fetchCustomers();
-  }, [fetchCustomers]);
+  fetchCustomers();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+}, [token]);
 
   const filteredCustomers = customers.filter((c) => {
     const matchesSearch =
